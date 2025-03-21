@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     if (/\d/.test(complex[k]) && k > 0 && /[A-Za-z)]/.test(complex[k-1])) {
                                         subResult += '<sub>' + complex[k] + '</sub>';
                                     } else if (complex[k] === 'l') {
-                                        subResult += '\u2113'; // Ganti l jadi ℓ
+                                        subResult += '\u2113';
                                     } else {
                                         subResult += complex[k];
                                     }
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                             if (j < formula.length && formula[j] === ')') {
                                 if (state === 's' || state === 'l' || state === 'g' || state === 'aq') {
-                                    var stateWithEll = state.replace('l', '\u2113'); // Pastikan l jadi ℓ di wujud zat
+                                    var stateWithEll = state.replace('l', '\u2113');
                                     result += '<i>(' + stateWithEll + ')</i>';
                                 } else {
                                     var subResult = '';
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         if (/\d/.test(state[k]) && k > 0 && /[A-Za-z]/.test(state[k-1])) {
                                             subResult += '<sub>' + state[k] + '</sub>';
                                         } else if (state[k] === 'l') {
-                                            subResult += '\u2113'; // Ganti l jadi ℓ
+                                            subResult += '\u2113';
                                         } else {
                                             subResult += state[k];
                                         }
@@ -114,17 +114,17 @@ document.addEventListener('DOMContentLoaded', function() {
                             result += '<sub>' + formula[i] + '</sub>';
                             i++;
                         } else if (formula[i] === 'l') {
-                            result += '\u2113'; // Ganti l jadi ℓ di luar konteks khusus
+                            result += '\u2113';
                             i++;
                         } else {
                             result += formula[i];
                             i++;
                         }
                     }
-                    return result;
+                    // Bungkus hanya rumus kimia dengan Times New Roman dan ukuran font
+                    return '<span style="font-family: \'Times New Roman\', serif; font-size: 13pt;">' + result + '</span>';
                 });
-                // Font Times New Roman dengan ukuran 13pt (naik 1pt dari default 12pt)
-                paragraph.innerHTML = '<span style="font-family: \'Times New Roman\', serif; font-size: 13pt;">' + formattedText + '</span>';
+                paragraph.innerHTML = formattedText;
             }
         });
     }, 500);
