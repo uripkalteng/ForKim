@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (/\d/.test(formula[i]) && i > 0 && formula[i-1] !== '.') {
                             result += '<sub>' + formula[i] + '</sub>';
                         } else if (formula[i] === '<' && i + 2 < formula.length && formula[i + 1] === '=' && formula[i + 2] === '>') {
-                            result += '↔'; // Panah ⇌
+                            result += '⇌'; // Panah ⇌
                             i += 2;
                         } else if (formula[i] === '(' && i + 1 < formula.length) {
                             var j = i + 1;
