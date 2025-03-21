@@ -1,20 +1,22 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Script rumus kimia dimuat');
     setTimeout(function() {
-        console.log('Mulai pemrosesan');
+        console.log('Mulai pemrosesan rumus kimia');
         document.querySelectorAll('p, li').forEach(function(paragraph) {
             if (paragraph.classList.contains('MathJax') || paragraph.querySelector('.MathJax') || paragraph.querySelector('script[type^="math"]')) {
-                console.log('Lewati MathJax: ', paragraph.textContent);
+                console.log('Lewati elemen MathJax: ', paragraph.textContent);
                 return;
             }
             if (paragraph.closest('#calx, [data-calx], .calx-sheet, .calx-form, input[data-cell]')) {
-                console.log('Lewati Calx: ', paragraph.textContent);
+                console.log('Lewati elemen Calx: ', paragraph.textContent);
                 return;
             }
 
             var text = paragraph.textContent;
+            console.log('Teks asli: ', text);
             if (text.includes('\\')) {
                 var formattedText = text.replace(/\\(.*?)\\/g, function(match, formula) {
+                    console.log('Memproses rumus: ', formula);
                     var result = '';
                     var i = 0;
                     while (i < formula.length) {
@@ -30,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     charge += formula[j];
                                     j++;
                                 }
-                                if (j < formula.length) j++;
+                                if (j < formula.length && formula[j] === ')') j++;
                             } else {
                                 while (j < formula.length && /[0-9+-]/.test(formula[j])) {
                                     charge += formula[j];
@@ -40,7 +42,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             if (charge) {
                                 var chargeNumber = charge.match(/\d+/) ? charge.match(/\d+/)[0] : '';
                                 var chargeSign = charge.match(/[+-]/) ? charge.match(/[+-]/)[0] : '';
-                                result += '<sup>' + (chargeNumber || '') + (chargeSign || '') + '</sup>';
+                                if (chargeNumber || chargeSign) {
+                                    result += '<sup>' + (chargeNumber || '') + (chargeSign || '') + '</sup>';
+                                }
                                 i = j;
                             } else {
                                 result += formula[i];
@@ -53,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 complex += formula[j];
                                 j++;
                             }
-                            if (j < formula.length) {
+                            if (j < formula.length && formula[j] === ']') {
                                 var subResult = '';
                                 for (var k = 0; k < complex.length; k++) {
                                     if (/\d/.test(complex[k]) && k > 0 && /[A-Za-z)]/.test(complex[k-1])) {
@@ -67,12 +71,22 @@ document.addEventListener('DOMContentLoaded', function() {
                                 result += '[' + subResult + ']';
                                 i = j + 1;
                                 if (i < formula.length) {
-                                    var charge = '';
-                                    while (i < formula.length && /[0-9+-]/.test(formula[i])) {
-                                        charge += formula[i];
+                                    var chargeNumber = '';
+                                    var chargeSign = '';
+                                    while (i < formula.length && /\d/.test(formula[i])) {
+                                        chargeNumber += formula[i];
                                         i++;
                                     }
-                                    if (charge) result += '<sup>' + charge + '</sup>';
+                                    if (i < formula.length && /[+-]/.test(formula[i])) {
+                                        chargeSign = formula[i];
+                                        i++;
+                                    } else if (!chargeNumber && i < formula.length && /[+-]/.test(formula[i])) {
+                                        chargeSign = formula[i];
+                                        i++;
+                                    }
+                                    if (chargeNumber || chargeSign) {
+                                        result += '<sup>' + (chargeNumber || '') + (chargeSign || '') + '</sup>';
+                                    }
                                 }
                             } else {
                                 result += formula[i];
@@ -85,9 +99,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                 state += formula[j];
                                 j++;
                             }
-                            if (j < formula.length) {
+                            if (j < formula.length && formula[j] === ')') {
                                 if (state === 's' || state === 'l' || state === 'g' || state === 'aq') {
-                                    result += '<i>(' + state.replace('l', '\u2113') + ')</i>';
+                                    var stateWithEll = state.replace('l', '\u2113');
+                                    result += '<i>(' + stateWithEll + ')</i>';
                                 } else {
                                     var subResult = '';
                                     for (var k = 0; k < state.length; k++) {
@@ -120,12 +135,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     return '<span style="font-family: \'Times New Roman\', serif; font-size: 13pt;" class="chem-formula">' + result + '</span>';
                 });
                 paragraph.innerHTML = formattedText;
-                console.log('Hasil: ', paragraph.innerHTML);
+                console.log('Hasil format: ', paragraph.innerHTML);
             }
         });
         if (typeof MathJax !== 'undefined') {
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-            console.log('MathJax re-render');
+            console.log('MathJax re-render dipanggil');
         }
     }, 500);
 });
