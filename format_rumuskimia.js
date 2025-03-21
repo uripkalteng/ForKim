@@ -1,4 +1,4 @@
-// Daftar lambang unsur kimia
+a// Daftar lambang unsur kimia
 const elements = new Set([
     'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne', 'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar',
     'K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr',
@@ -33,7 +33,6 @@ function formatChemicalFormula(input) {
                 formattedFormula += char;
             }
         } else if (char === '(') {
-            // Menangani wujud zat dalam tanda kurung
             let j = i + 1;
             let state = '';
             while (j < input.length && input[j] !== ')') {
@@ -47,7 +46,6 @@ function formatChemicalFormula(input) {
                 formattedFormula += char;
             }
         } else if (char === '^') {
-            // Menangani muatan
             if (i + 1 < input.length && /[+-]/.test(input[i + 1])) {
                 let chargeChar = input[i + 1];
                 let chargeNumber = '';
@@ -66,7 +64,6 @@ function formatChemicalFormula(input) {
                 formattedFormula += char;
             }
         } else if (char === '<' && i + 2 < input.length && (input[i + 1] === '=' || input[i + 1] === '-') && input[i + 2] === '>') {
-            // Menangani tanda panah kesetimbangan (<=> atau <->)
             formattedFormula += `⇌`;
             i += 2;
         } else {
@@ -77,27 +74,28 @@ function formatChemicalFormula(input) {
     return formattedFormula;
 }
 
-// Fungsi untuk memformat teks yang diapit oleh tanda \...\
+// Fungsi untuk memformat teks yang diapit oleh \...\
 function formatChemicalFormulasInText() {
-    const paragraphs = document.querySelectorAll('p, li, div.post-body'); // Sesuaikan dengan selector yang sesuai
-    let hasChemicalFormula = false; // Flag untuk mengecek apakah ada tanda pemanggil
-
+    // Targetkan elemen .post-body di Blogspot, dengan fallback ke p dan li
+    const paragraphs = document.querySelectorAll('.post-body, .post-body p, .post-body li, p, li');
     paragraphs.forEach(paragraph => {
         let html = paragraph.innerHTML;
-        // Cek apakah ada tanda \
         if (html.includes('\\')) {
-            hasChemicalFormula = true;
-            // Deteksi teks yang diapit oleh \...\
             html = html.replace(/\\(.*?)\\/g, (match, formula) => {
                 return formatChemicalFormula(formula);
             });
             paragraph.innerHTML = html;
         }
     });
-
-    // Jika tidak ada tanda pemanggil, hentikan eksekusi
-    if (!hasChemicalFormula) return;
 }
 
-// Jalankan fungsi saat halaman selesai dimuat
-window.addEventListener('load', formatChemicalFormulasInText);
+// Jalankan saat DOM siap, dengan interval untuk konten dinamis Blogspot
+function initFormatting() {
+    formatChemicalFormulasInText();
+    // Jalankan lagi setelah 1 detik untuk memastikan konten dinamis dimuat
+    setTimeout(formatChemicalFormulasInText, 1000);
+}
+
+// Eksekusi saat DOM siap dan sebagai fallback
+document.addEventListener('DOMContentLoaded', initFormatting);
+initFormatting(); // Jalankan langsung jika DOM sudah siap
