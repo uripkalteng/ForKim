@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             result += '\u21CC'; // Panah ⇌
                             i += 2;
                         } else if (formula[i] === '^' && i + 1 < formula.length) {
-                            // Tangani superscript untuk muatan
+                            // Superscript untuk muatan
                             var charge = '';
                             var j = i + 1;
                             if (formula[j] === '(') {
@@ -21,7 +21,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                     charge += formula[j];
                                     j++;
                                 }
-                                if (j < formula.length && formula[j] === ')') j++;
+                                if (j < formula.length && formula[j] === ')') {
+                                    j++;
+                                }
                             } else {
                                 while (j < formula.length && /[0-9+-]/.test(formula[j])) {
                                     charge += formula[j];
@@ -42,10 +44,30 @@ document.addEventListener('DOMContentLoaded', function() {
                             } else {
                                 result += formula[i];
                             }
-                        } else if (/\d/.test(formula[i]) && i > 0 && /[A-Za-z)]/.test(formula[i-1])) {
-                            // Subskrip untuk angka setelah huruf atau tanda kurung tutup
-                            result += '<sub>' + formula[i] + '</sub>';
+                        } else if (formula[i] === '[' && i + 1 < formula.length) {
+                            // Ion kompleks dengan kurung siku
+                            var j = i + 1;
+                            var complex = '';
+                            while (j < formula.length && formula[j] !== ']') {
+                                complex += formula[j];
+                                j++;
+                            }
+                            if (j < formula.length && formula[j] === ']') {
+                                var subResult = '';
+                                for (var k = 0; k < complex.length; k++) {
+                                    if (/\d/.test(complex[k]) && k > 0 && /[A-Za-z)]/.test(complex[k-1])) {
+                                        subResult += '<sub>' + complex[k] + '</sub>';
+                                    } else {
+                                        subResult += complex[k];
+                                    }
+                                }
+                                result += '[' + subResult + ']';
+                                i = j;
+                            } else {
+                                result += formula[i];
+                            }
                         } else if (formula[i] === '(' && i + 1 < formula.length) {
+                            // Kurung bulat
                             var j = i + 1;
                             var state = '';
                             while (j < formula.length && formula[j] !== ')') {
@@ -56,7 +78,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                 if (state === 's' || state === 'l' || state === 'g' || state === 'aq') {
                                     result += '<i>(' + state + ')</i>';
                                 } else {
-                                    // Proses isi kurung sebagai rumus kimia
                                     var subResult = '';
                                     for (var k = 0; k < state.length; k++) {
                                         if (/\d/.test(state[k]) && k > 0 && /[A-Za-z]/.test(state[k-1])) {
@@ -71,29 +92,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             } else {
                                 result += formula[i];
                             }
-                        } else if (formula[i] === '[' && i + 1 < formula.length) {
-                            // Tangani ion kompleks dengan tanda kurung siku
-                            var j = i + 1;
-                            var complex = '';
-                            while (j < formula.length && formula[j] !== ']') {
-                                complex += formula[j];
-                                j++;
-                            }
-                            if (j < formula.length && formula[j] === ']') {
-                                // Proses isi kurung siku sebagai rumus kimia
-                                var subResult = '';
-                                for (var k = 0; k < complex.length; k++) {
-                                    if (/\d/.test(complex[k]) && k > 0 && /[A-Za-z)]/.test(complex[k-1])) {
-                                        subResult += '<sub>' + complex[k] + '</sub>';
-                                    } else {
-                                        subResult += complex[k];
-                                    }
-                                }
-                                result += '[' + subResult + ']';
-                                i = j;
-                            } else {
-                                result += formula[i];
-                            }
+                        } else if (/\d/.test(formula[i]) && i > 0 && /[A-Za-z)]/.test(formula[i-1])) {
+                            // Subskrip setelah huruf atau kurung tutup
+                            result += '<sub>' + formula[i] + '</sub>';
                         } else {
                             result += formula[i];
                         }
