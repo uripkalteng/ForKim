@@ -57,8 +57,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                 for (var k = 0; k < complex.length; k++) {
                                     if (/\d/.test(complex[k]) && k > 0 && /[A-Za-z)]/.test(complex[k-1])) {
                                         subResult += '<sub>' + complex[k] + '</sub>';
-                                    } else if (complex[k] === 'l') {
-                                        subResult += '\u2113'; // Ganti l jadi ℓ
                                     } else {
                                         subResult += complex[k];
                                     }
@@ -78,6 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         chargeSign = formula[i];
                                         i++;
                                     } else if (!chargeNumber && i < formula.length && /[+-]/.test(formula[i])) {
+                                        // Tangani muatan tunggal tanpa angka
                                         chargeSign = formula[i];
                                         i++;
                                     }
@@ -105,8 +104,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                     for (var k = 0; k < state.length; k++) {
                                         if (/\d/.test(state[k]) && k > 0 && /[A-Za-z]/.test(state[k-1])) {
                                             subResult += '<sub>' + state[k] + '</sub>';
-                                        } else if (state[k] === 'l') {
-                                            subResult += '\u2113'; // Ganti l jadi ℓ
                                         } else {
                                             subResult += state[k];
                                         }
@@ -122,17 +119,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             // Subskrip setelah huruf atau kurung tutup
                             result += '<sub>' + formula[i] + '</sub>';
                             i++;
-                        } else if (formula[i] === 'l') {
-                            // Ganti l kecil jadi ℓ di luar kurung
-                            result += '\u2113';
-                            i++;
                         } else {
                             result += formula[i];
                             i++;
                         }
                     }
-                    // Bungkus dengan span untuk font Times New Roman
-                    return '<span class="chemical-formula">' + result + '</span>';
+                    return result;
                 });
                 paragraph.innerHTML = formattedText;
             }
