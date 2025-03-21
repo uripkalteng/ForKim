@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Tunggu 500ms agar Calx selesai inisialisasi
     setTimeout(function() {
         document.querySelectorAll('p, li').forEach(function(paragraph) {
-            // Lewati elemen Calx (sesuai struktur di halaman Anda)
             if (paragraph.closest('#calx, [data-calx], .calx-sheet, .calx-form, input[data-cell]')) return;
 
             var text = paragraph.textContent;
@@ -23,7 +21,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                 j++;
                             }
                             if (j < formula.length && formula[j] === ')') {
-                                result += '<i>(' + state + ')</i>';
+                                // Hanya format italik untuk wujud zat: (s), (l), (g), (aq)
+                                if (state === 's' || state === 'l' || state === 'g' || state === 'aq') {
+                                    result += '<i>(' + state + ')</i>';
+                                } else {
+                                    result += '(' + state + ')'; // Teks normal untuk kurung lain
+                                }
                                 i = j;
                             } else {
                                 result += formula[i];
@@ -51,5 +54,5 @@ document.addEventListener('DOMContentLoaded', function() {
                 paragraph.innerHTML = formattedText;
             }
         });
-    }, 500); // Penundaan 500ms
+    }, 500);
 });
