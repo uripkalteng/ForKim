@@ -74,21 +74,31 @@ function formatChemicalFormula(input) {
     return formattedFormula;
 }
 
-// Format hanya pada elemen dengan kelas .chemical-formula
 function formatChemicalFormulasInText() {
-    document.querySelectorAll('.chemical-formula').forEach(element => {
-        let text = element.textContent;
+    // Pilih semua elemen teks yang mungkin berisi rumus, kecuali yang terkait Calx
+    document.querySelectorAll('.post-body, .post-body p, .post-body li, p, li').forEach(paragraph => {
+        // Lewati elemen yang merupakan bagian dari Calx
+        if (paragraph.closest('#calx, [data-calx]')) return;
+
+        let text = paragraph.textContent;
         if (text.includes('\\')) {
             const formattedText = text.replace(/\\(.*?)\\/g, (match, formula) => {
                 return formatChemicalFormula(formula);
             });
-            element.innerHTML = formattedText;
+            // Gunakan DOM untuk mencegah encoding ulang
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = formattedText;
+            while (paragraph.firstChild) {
+                paragraph.removeChild(paragraph.firstChild);
+            }
+            while (tempDiv.firstChild) {
+                paragraph.appendChild(tempDiv.firstChild);
+            }
         }
     });
 }
 
-// Jalankan saat DOM siap, dengan jeda untuk konten dinamis
 document.addEventListener('DOMContentLoaded', function() {
     formatChemicalFormulasInText();
-    setTimeout(formatChemicalFormulasInText, 1000);
+    setTimeout(formatChemicalFormulasInText, 1000); // Jeda untuk konten dinamis
 });
