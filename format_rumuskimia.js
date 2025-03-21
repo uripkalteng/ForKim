@@ -10,9 +10,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     var result = formula;
                     // Ion kompleks: [Ag(NH3)2]^3+
                     result = result.replace(/\[([^\]]*)\](\d*[+-])?/g, function(match, complex, charge) {
-                        var formattedComplex = complex
-                            .replace(/([A-Za-z])([0-9]+)/g, '$1<sub>$2</sub>')
-                            .replace(/l/g, '\u2113');
+                        var formattedComplex = complex;
+                        // Subskrip di dalam ion kompleks
+                        formattedComplex = formattedComplex.replace(/([A-Za-z])([0-9]+)/g, '$1<sub>$2</sub>');
+                        formattedComplex = formattedComplex.replace(/l/g, '\u2113');
                         var formattedCharge = charge ? '<sup>' + charge + '</sup>' : '';
                         return '[' + formattedComplex + ']' + formattedCharge;
                     });
@@ -21,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         return '<i>(' + state.replace('l', '\u2113') + ')</i>';
                     });
                     // Subskrip di luar ion kompleks
-                    result = result.replace(/([A-Za-z])([0-9]+)/g, '$1<sub>$2</sub>');
+                    result = result.replace(/([A-Za-z])([0-9]+)(?=\b|[^0-9])/g, '$1<sub>$2</sub>');
                     // Superscript untuk muatan
                     result = result.replace(/\^(\d*[+-])/g, '<sup>$1</sup>');
                     // Ganti l jadi ℓ
