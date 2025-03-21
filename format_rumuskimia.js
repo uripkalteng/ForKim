@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Script rumus kimia dimuat');
     setTimeout(function() {
+        console.log('Mulai pemrosesan rumus kimia');
         document.querySelectorAll('p, li').forEach(function(paragraph) {
             // Lewati elemen yang sudah diproses MathJax
             if (paragraph.classList.contains('MathJax') || paragraph.querySelector('.MathJax') || paragraph.querySelector('script[type^="math"]')) {
@@ -13,8 +15,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             var text = paragraph.textContent;
+            console.log('Teks asli: ', text);
             if (text.includes('\\')) {
+                console.log('Teks mengandung \\, mulai format');
                 var formattedText = text.replace(/\\(.*?)\\/g, function(match, formula) {
+                    console.log('Memproses rumus: ', formula);
                     var result = '';
                     var i = 0;
                     while (i < formula.length) {
@@ -130,17 +135,19 @@ document.addEventListener('DOMContentLoaded', function() {
                             i++;
                         }
                     }
-                    // Terapkan Times New Roman hanya pada rumus kimia
                     return '<span style="font-family: \'Times New Roman\', serif; font-size: 13pt;" class="chem-formula">' + result + '</span>';
                 });
                 paragraph.innerHTML = formattedText;
-                console.log('Formatted: ', paragraph.innerHTML);
+                console.log('Hasil format: ', paragraph.innerHTML);
+            } else {
+                console.log('Teks tidak mengandung \\: ', text);
             }
         });
-        // Re-render MathJax setelah pemrosesan kimia selesai
         if (typeof MathJax !== 'undefined') {
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
             console.log('MathJax re-render dipanggil');
+        } else {
+            console.log('MathJax tidak ditemukan');
         }
-    }, 500); // Tunggu 500ms untuk pastikan DOM siap
-}); // Pastikan penutup ini ada
+    }, 500);
+});
