@@ -131,10 +131,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
                     // Terapkan Times New Roman hanya pada rumus kimia
-                    return '<span style="font-family: \'Times New Roman\', serif; font-size: 13pt;">' + result + '</span>';
+                    return '<span style="font-family: \'Times New Roman\', serif; font-size: 13pt;" class="chem-formula">' + result + '</span>';
                 });
                 paragraph.innerHTML = formattedText;
-                console.log('Formatted: ', paragraph.innerHTML); // Debug
+                console.log('Formatted: ', paragraph.innerHTML);
             }
         });
         // Re-render MathJax setelah pemrosesan kimia selesai
@@ -143,4 +143,4 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('MathJax re-render dipanggil');
         }
     }, 500); // Tunggu 500ms untuk pastikan DOM siap
-});
+}); // Pastikan penutup ini ada
