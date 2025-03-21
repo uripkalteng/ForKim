@@ -64,13 +64,15 @@ document.addEventListener('DOMContentLoaded', function() {
                                 result += '[' + subResult + ']';
                                 i = j + 1;
 
-                                // Cek muatan setelah kurung siku
-                                if (i < formula.length && /\d/.test(formula[i])) {
+                                // Cek muatan setelah kurung siku (angka + tanda atau tanda saja)
+                                if (i < formula.length) {
                                     var chargeNumber = '';
                                     var chargeSign = '';
-                                    while (i < formula.length && /\d/.test(formula[i])) {
-                                        chargeNumber += formula[i];
-                                        i++;
+                                    if (/\d/.test(formula[i])) {
+                                        while (i < formula.length && /\d/.test(formula[i])) {
+                                            chargeNumber += formula[i];
+                                            i++;
+                                        }
                                     }
                                     if (i < formula.length && /[+-]/.test(formula[i])) {
                                         chargeSign = formula[i];
@@ -78,6 +80,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                     }
                                     if (chargeNumber && chargeSign) {
                                         result += '<sup>' + chargeNumber + chargeSign + '</sup>';
+                                    } else if (chargeSign) {
+                                        result += '<sup>' + chargeSign + '</sup>';
                                     } else if (chargeNumber) {
                                         result += '<sup>' + chargeNumber + '</sup>';
                                     }
