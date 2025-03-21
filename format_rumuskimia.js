@@ -8,10 +8,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (text.includes('/')) {
                 var formattedText = text.replace(/\/(.*?)\/(?!\/)/g, function(match, formula) {
                     var result = formula;
-                    // Ion kompleks: [Al(H2O)2(OH)4]
+                    // Ion kompleks: [Ag(NH3)2]+
                     result = result.replace(/\[([^\]]*)\](\d*[+-])?/g, function(match, complex, charge) {
                         var formattedComplex = complex
-                            .replace(/(\d)(?=[A-Za-z\(\[]|$)/g, '<sub>$1</sub>')
+                            .replace(/(\d)(?=[A-Za-z\[\(]|$)/g, '<sub>$1</sub>')
                             .replace(/l/g, '\u2113');
                         var formattedCharge = charge ? '<sup>' + charge + '</sup>' : '';
                         return '[' + formattedComplex + ']' + formattedCharge;
