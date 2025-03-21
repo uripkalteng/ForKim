@@ -64,7 +64,8 @@ function formatChemicalFormula(input) {
                 formattedFormula += char;
             }
         } else if (char === '<' && i + 2 < input.length && (input[i + 1] === '=' || input[i + 1] === '-') && input[i + 2] === '>') {
-            formattedFormula += `⇌`;
+            // Gunakan entitas HTML untuk simbol ⇌
+            formattedFormula += `&#8652;`;
             i += 2;
         } else {
             formattedFormula += char;
@@ -76,7 +77,6 @@ function formatChemicalFormula(input) {
 
 // Fungsi untuk memformat teks yang diapit oleh \...\
 function formatChemicalFormulasInText() {
-    // Targetkan elemen .post-body di Blogspot, dengan fallback ke p dan li
     const paragraphs = document.querySelectorAll('.post-body, .post-body p, .post-body li, p, li');
     paragraphs.forEach(paragraph => {
         let html = paragraph.innerHTML;
@@ -92,10 +92,9 @@ function formatChemicalFormulasInText() {
 // Jalankan saat DOM siap, dengan interval untuk konten dinamis Blogspot
 function initFormatting() {
     formatChemicalFormulasInText();
-    // Jalankan lagi setelah 1 detik untuk memastikan konten dinamis dimuat
-    setTimeout(formatChemicalFormulasInText, 1000);
+    setTimeout(formatChemicalFormulasInText, 1000); // Jalankan lagi setelah 1 detik
 }
 
 // Eksekusi saat DOM siap dan sebagai fallback
 document.addEventListener('DOMContentLoaded', initFormatting);
-initFormatting(); // Jalankan langsung jika DOM sudah siap
+initFormatting();
