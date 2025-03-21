@@ -1,4 +1,3 @@
-<script>
 // Daftar lambang unsur kimia
 const elements = new Set([
     'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne', 'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar',
@@ -102,4 +101,3 @@ function formatChemicalFormulasInText() {
 
 // Jalankan fungsi saat halaman selesai dimuat
 window.addEventListener('load', formatChemicalFormulasInText);
-</script>
