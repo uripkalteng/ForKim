@@ -21,11 +21,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                 j++;
                             }
                             if (j < formula.length && formula[j] === ')') {
-                                // Hanya format italik untuk wujud zat: (s), (l), (g), (aq)
+                                // Hanya wujud zat yang italik
                                 if (state === 's' || state === 'l' || state === 'g' || state === 'aq') {
                                     result += '<i>(' + state + ')</i>';
+                                    console.log('Wujud zat ditemukan: ' + state + ', diformat italik');
                                 } else {
-                                    result += '(' + state + ')'; // Teks normal untuk kurung lain
+                                    result += '(' + state + ')';
+                                    console.log('Kurung biasa ditemukan: ' + state + ', tidak italik');
                                 }
                                 i = j;
                             } else {
