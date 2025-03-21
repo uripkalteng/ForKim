@@ -1,102 +1,52 @@
-// Daftar lambang unsur kimia
-const elements = new Set([
-    'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne', 'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar',
-    'K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr',
-    'Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe',
-    'Cs', 'Ba', 'La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu',
-    'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn',
-    'Fr', 'Ra', 'Ac', 'Th', 'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm', 'Md', 'No', 'Lr',
-    'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt', 'Ds', 'Rg', 'Cn', 'Nh', 'Fl', 'Mc', 'Lv', 'Ts', 'Og'
-]);
-
-function formatChemicalFormula(input) {
-    let formattedFormula = '';
-    let i = 0;
-    while (i < input.length) {
-        let char = input[i];
-        if (/[A-Za-z]/.test(char)) {
-            let element = char.toUpperCase();
-            if (i + 1 < input.length && /[a-z]/.test(input[i + 1])) {
-                element += input[i + 1].toLowerCase();
-                i++;
-            }
-            if (elements.has(element)) {
-                formattedFormula += element;
-            } else {
-                formattedFormula += char;
-            }
-        } else if (/\d/.test(char)) {
-            if (i > 0 && input[i - 1] !== '.') {
-                formattedFormula += `<sub>${char}</sub>`;
-            } else {
-                formattedFormula += char;
-            }
-        } else if (char === '(') {
-            let j = i + 1;
-            let state = '';
-            while (j < input.length && input[j] !== ')') {
-                state += input[j];
-                j++;
-            }
-            if (j < input.length && input[j] === ')') {
-                formattedFormula += `<i>(${state})</i>`;
-                i = j;
-            } else {
-                formattedFormula += char;
-            }
-        } else if (char === '^') {
-            if (i + 1 < input.length && /[+-]/.test(input[i + 1])) {
-                let chargeChar = input[i + 1];
-                let chargeNumber = '';
-                let j = i + 2;
-                while (j < input.length && /\d/.test(input[j])) {
-                    chargeNumber += input[j];
-                    j++;
-                }
-                if (chargeNumber) {
-                    formattedFormula += `<sup>${chargeChar}${chargeNumber}</sup>`;
-                } else {
-                    formattedFormula += `<sup>${chargeChar}</sup>`;
-                }
-                i = j - 1;
-            } else {
-                formattedFormula += char;
-            }
-        } else if (char === '<' && i + 2 < input.length && (input[i + 1] === '=' || input[i + 1] === '-') && input[i + 2] === '>') {
-            formattedFormula += '↔'; // Entitas HTML untuk ⇌
-            console.log('Mengganti <=> atau <-> menjadi ⇌');
-            i += 2;
-        } else {
-            formattedFormula += char;
-        }
-        i++;
-    }
-    return formattedFormula;
-}
-
-function formatChemicalFormulasInText() {
-    document.querySelectorAll('.post-body, .post-body p, .post-body li, p, li').forEach(paragraph => {
-        // Lewati elemen yang terkait dengan Calx
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('p, li').forEach(function(paragraph) {
+        // Lewati elemen Calx
         if (paragraph.closest('#calx, [data-calx], .calx, .calx-sheet')) return;
 
-        let text = paragraph.textContent;
+        var text = paragraph.textContent;
         if (text.includes('\\')) {
-            const formattedText = text.replace(/\\(.*?)\\/g, (match, formula) => {
-                return formatChemicalFormula(formula);
+            var formattedText = text.replace(/\\(.*?)\\/g, function(match, formula) {
+                var result = '';
+                for (var i = 0; i < formula.length; i++) {
+                    if (/\d/.test(formula[i]) && i > 0 && formula[i-1] !== '.') {
+                        result += '<sub>' + formula[i] + '</sub>';
+                    } else if (formula[i] === '<' && i + 2 < formula.length && formula[i + 1] === '=' && formula[i + 2] === '>') {
+                        result += '↔'; // Panah ⇌
+                        i += 2;
+                    } else if (formula[i] === '(' && i + 1 < formula.length) {
+                        var j = i + 1;
+                        var state = '';
+                        while (j < formula.length && formula[j] !== ')') {
+                            state += formula[j];
+                            j++;
+                        }
+                        if (j < formula.length && formula[j] === ')') {
+                            result += '<i>(' + state + ')</i>';
+                            i = j;
+                        } else {
+                            result += formula[i];
+                        }
+                    } else if (formula[i] === '^' && i + 1 < formula.length && /[+-]/.test(formula[i + 1])) {
+                        var chargeChar = formula[i + 1];
+                        var chargeNumber = '';
+                        var j = i + 2;
+                        while (j < formula.length && /\d/.test(formula[j])) {
+                            chargeNumber += formula[j];
+                            j++;
+                        }
+                        if (chargeNumber) {
+                            result += '<sup>' + chargeChar + chargeNumber + '</sup>';
+                        } else {
+                            result += '<sup>' + chargeChar + '</sup>';
+                        }
+                        i = j - 1;
+                    } else {
+                        result += formula[i];
+                    }
+                }
+                return result;
             });
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = formattedText;
-            while (paragraph.firstChild) {
-                paragraph.removeChild(paragraph.firstChild);
-            }
-            while (tempDiv.firstChild) {
-                paragraph.appendChild(tempDiv.firstChild);
-            }
+            paragraph.innerHTML = formattedText;
         }
     });
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    formatChemicalFormulasInText();
-    setTimeout(formatChemicalFormulasInText, 1000);
 });
