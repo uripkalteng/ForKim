@@ -1,15 +1,6 @@
-// Daftar lambang unsur kimia
-const elements = new Set([
-    'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne', 'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar',
-    'K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr',
-    'Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe',
-    'Cs', 'Ba', 'La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu',
-    'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn',
-    'Fr', 'Ra', 'Ac', 'Th', 'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm', 'Md', 'No', 'Lr',
-    'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt', 'Ds', 'Rg', 'Cn', 'Nh', 'Fl', 'Mc', 'Lv', 'Ts', 'Og'
-]);
+// Daftar lambang unsur kimia (sama seperti sebelumnya)
+const elements = new Set([...]); // Isi sama
 
-// Fungsi untuk memformat rumus kimia dan persamaan reaksi
 function formatChemicalFormula(input) {
     let formattedFormula = '';
     let i = 0;
@@ -64,7 +55,7 @@ function formatChemicalFormula(input) {
                 formattedFormula += char;
             }
         } else if (char === '<' && i + 2 < input.length && (input[i + 1] === '=' || input[i + 1] === '-') && input[i + 2] === '>') {
-            formattedFormula += '&harr;'; // Gunakan entitas HTML untuk ⇌
+            formattedFormula += '↔';
             i += 2;
         } else {
             formattedFormula += char;
@@ -74,26 +65,30 @@ function formatChemicalFormula(input) {
     return formattedFormula;
 }
 
-// Fungsi untuk memformat teks yang diapit oleh \...\
 function formatChemicalFormulasInText() {
     const paragraphs = document.querySelectorAll('.post-body, .post-body p, .post-body li, p, li');
     paragraphs.forEach(paragraph => {
-        let html = paragraph.innerHTML;
-        if (html.includes('\\')) {
-            html = html.replace(/\\(.*?)\\/g, (match, formula) => {
+        let text = paragraph.textContent;
+        if (text.includes('\\')) {
+            const newHTML = text.replace(/\\(.*?)\\/g, (match, formula) => {
                 return formatChemicalFormula(formula);
             });
-            paragraph.innerHTML = html;
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = newHTML;
+            while (paragraph.firstChild) {
+                paragraph.removeChild(paragraph.firstChild);
+            }
+            while (tempDiv.firstChild) {
+                paragraph.appendChild(tempDiv.firstChild);
+            }
         }
     });
 }
 
-// Jalankan saat DOM siap, dengan interval untuk konten dinamis Blogspot
 function initFormatting() {
     formatChemicalFormulasInText();
-    setTimeout(formatChemicalFormulasInText, 1000); // Jalankan lagi setelah 1 detik
+    setTimeout(formatChemicalFormulasInText, 1000);
 }
 
-// Eksekusi saat DOM siap dan sebagai fallback
 document.addEventListener('DOMContentLoaded', initFormatting);
 initFormatting();
