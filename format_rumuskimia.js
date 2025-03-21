@@ -64,26 +64,24 @@ document.addEventListener('DOMContentLoaded', function() {
                                 result += '[' + subResult + ']';
                                 i = j + 1;
 
-                                // Cek muatan setelah kurung siku (angka + tanda atau tanda saja)
+                                // Cek muatan setelah kurung siku
                                 if (i < formula.length) {
                                     var chargeNumber = '';
                                     var chargeSign = '';
-                                    if (/\d/.test(formula[i])) {
-                                        while (i < formula.length && /\d/.test(formula[i])) {
-                                            chargeNumber += formula[i];
-                                            i++;
-                                        }
+                                    while (i < formula.length && /\d/.test(formula[i])) {
+                                        chargeNumber += formula[i];
+                                        i++;
                                     }
                                     if (i < formula.length && /[+-]/.test(formula[i])) {
                                         chargeSign = formula[i];
                                         i++;
+                                    } else if (!chargeNumber && i < formula.length && /[+-]/.test(formula[i])) {
+                                        // Tangani muatan tunggal tanpa angka
+                                        chargeSign = formula[i];
+                                        i++;
                                     }
-                                    if (chargeNumber && chargeSign) {
-                                        result += '<sup>' + chargeNumber + chargeSign + '</sup>';
-                                    } else if (chargeSign) {
-                                        result += '<sup>' + chargeSign + '</sup>';
-                                    } else if (chargeNumber) {
-                                        result += '<sup>' + chargeNumber + '</sup>';
+                                    if (chargeNumber || chargeSign) {
+                                        result += '<sup>' + (chargeNumber || '') + (chargeSign || '') + '</sup>';
                                     }
                                 }
                             } else {
