@@ -9,7 +9,6 @@ const elements = new Set([
     'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt', 'Ds', 'Rg', 'Cn', 'Nh', 'Fl', 'Mc', 'Lv', 'Ts', 'Og'
 ]);
 
-// Fungsi untuk memformat rumus kimia dan persamaan reaksi
 function formatChemicalFormula(input) {
     let formattedFormula = '';
     let i = 0;
@@ -65,7 +64,7 @@ function formatChemicalFormula(input) {
             }
         } else if (char === '<' && i + 2 < input.length && (input[i + 1] === '=' || input[i + 1] === '-') && input[i + 2] === '>') {
             formattedFormula += '↔'; // Entitas HTML untuk ⇌
-            console.log('Mengganti <=> atau <-> menjadi ⇌'); // Debugging
+            console.log('Mengganti <=> atau <-> menjadi ⇌');
             i += 2;
         } else {
             formattedFormula += char;
@@ -75,26 +74,21 @@ function formatChemicalFormula(input) {
     return formattedFormula;
 }
 
-// Fungsi untuk memformat teks yang diapit oleh \...\
+// Format hanya pada elemen dengan kelas .chemical-formula
 function formatChemicalFormulasInText() {
-    const paragraphs = document.querySelectorAll('.post-body, .post-body p, .post-body li, p, li');
-    paragraphs.forEach(paragraph => {
-        let html = paragraph.innerHTML;
-        if (html.includes('\\')) {
-            html = html.replace(/\\(.*?)\\/g, (match, formula) => {
+    document.querySelectorAll('.chemical-formula').forEach(element => {
+        let text = element.textContent;
+        if (text.includes('\\')) {
+            const formattedText = text.replace(/\\(.*?)\\/g, (match, formula) => {
                 return formatChemicalFormula(formula);
             });
-            paragraph.innerHTML = html;
+            element.innerHTML = formattedText;
         }
     });
 }
 
-// Jalankan saat DOM siap, dengan interval untuk konten dinamis Blogspot
-function initFormatting() {
+// Jalankan saat DOM siap, dengan jeda untuk konten dinamis
+document.addEventListener('DOMContentLoaded', function() {
     formatChemicalFormulasInText();
-    setTimeout(formatChemicalFormulasInText, 1000); // Jalankan lagi setelah 1 detik
-}
-
-// Eksekusi saat DOM siap dan sebagai fallback
-document.addEventListener('DOMContentLoaded', initFormatting);
-initFormatting();
+    setTimeout(formatChemicalFormulasInText, 1000);
+});
