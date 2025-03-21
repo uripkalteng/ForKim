@@ -7,12 +7,13 @@ document.addEventListener('DOMContentLoaded', function() {
             if (text.includes('\\')) {
                 var formattedText = text.replace(/\\(.*?)\\/g, function(match, formula) {
                     var result = '';
-                    for (var i = 0; i < formula.length; i++) {
+                    var i = 0;
+                    while (i < formula.length) {
                         if (formula[i] === '<' && i + 2 < formula.length && formula[i + 1] === '=' && formula[i + 2] === '>') {
                             result += '\u21CC'; // Panah ⇌
-                            i += 2;
+                            i += 3;
                         } else if (formula[i] === '^' && i + 1 < formula.length) {
-                            // Superscript untuk muatan
+                            // Superscript untuk muatan dalam ^
                             var charge = '';
                             var j = i + 1;
                             if (formula[j] === '(') {
@@ -21,9 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     charge += formula[j];
                                     j++;
                                 }
-                                if (j < formula.length && formula[j] === ')') {
-                                    j++;
-                                }
+                                if (j < formula.length && formula[j] === ')') j++;
                             } else {
                                 while (j < formula.length && /[0-9+-]/.test(formula[j])) {
                                     charge += formula[j];
@@ -40,9 +39,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                 } else if (chargeNumber) {
                                     result += '<sup>' + chargeNumber + '</sup>';
                                 }
-                                i = j - 1;
+                                i = j;
                             } else {
                                 result += formula[i];
+                                i++;
                             }
                         } else if (formula[i] === '[' && i + 1 < formula.length) {
                             // Ion kompleks dengan kurung siku
@@ -62,9 +62,29 @@ document.addEventListener('DOMContentLoaded', function() {
                                     }
                                 }
                                 result += '[' + subResult + ']';
-                                i = j;
+                                i = j + 1;
+
+                                // Cek muatan setelah kurung siku
+                                if (i < formula.length && /\d/.test(formula[i])) {
+                                    var chargeNumber = '';
+                                    var chargeSign = '';
+                                    while (i < formula.length && /\d/.test(formula[i])) {
+                                        chargeNumber += formula[i];
+                                        i++;
+                                    }
+                                    if (i < formula.length && /[+-]/.test(formula[i])) {
+                                        chargeSign = formula[i];
+                                        i++;
+                                    }
+                                    if (chargeNumber && chargeSign) {
+                                        result += '<sup>' + chargeNumber + chargeSign + '</sup>';
+                                    } else if (chargeNumber) {
+                                        result += '<sup>' + chargeNumber + '</sup>';
+                                    }
+                                }
                             } else {
                                 result += formula[i];
+                                i++;
                             }
                         } else if (formula[i] === '(' && i + 1 < formula.length) {
                             // Kurung bulat
@@ -88,15 +108,18 @@ document.addEventListener('DOMContentLoaded', function() {
                                     }
                                     result += '(' + subResult + ')';
                                 }
-                                i = j;
+                                i = j + 1;
                             } else {
                                 result += formula[i];
+                                i++;
                             }
                         } else if (/\d/.test(formula[i]) && i > 0 && /[A-Za-z)]/.test(formula[i-1])) {
                             // Subskrip setelah huruf atau kurung tutup
                             result += '<sub>' + formula[i] + '</sub>';
+                            i++;
                         } else {
                             result += formula[i];
+                            i++;
                         }
                     }
                     return result;
