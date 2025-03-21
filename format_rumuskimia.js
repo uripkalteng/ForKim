@@ -3,12 +3,10 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(function() {
         console.log('Mulai pemrosesan rumus kimia');
         document.querySelectorAll('p, li').forEach(function(paragraph) {
-            // Lewati elemen yang sudah diproses MathJax
             if (paragraph.classList.contains('MathJax') || paragraph.querySelector('.MathJax') || paragraph.querySelector('script[type^="math"]')) {
                 console.log('Lewati elemen MathJax: ', paragraph.textContent);
                 return;
             }
-            // Lewati elemen Calx
             if (paragraph.closest('#calx, [data-calx], .calx-sheet, .calx-form, input[data-cell]')) {
                 console.log('Lewati elemen Calx: ', paragraph.textContent);
                 return;
@@ -17,14 +15,13 @@ document.addEventListener('DOMContentLoaded', function() {
             var text = paragraph.textContent;
             console.log('Teks asli: ', text);
             if (text.includes('\\')) {
-                console.log('Teks mengandung \\, mulai format');
                 var formattedText = text.replace(/\\(.*?)\\/g, function(match, formula) {
                     console.log('Memproses rumus: ', formula);
                     var result = '';
                     var i = 0;
                     while (i < formula.length) {
                         if (formula[i] === '<' && i + 2 < formula.length && formula[i + 1] === '=' && formula[i + 2] === '>') {
-                            result += '\u21CC'; // Panah ⇌
+                            result += '\u21CC';
                             i += 3;
                         } else if (formula[i] === '^' && i + 1 < formula.length) {
                             var charge = '';
@@ -139,15 +136,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 paragraph.innerHTML = formattedText;
                 console.log('Hasil format: ', paragraph.innerHTML);
-            } else {
-                console.log('Teks tidak mengandung \\: ', text);
             }
         });
         if (typeof MathJax !== 'undefined') {
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
             console.log('MathJax re-render dipanggil');
-        } else {
-            console.log('MathJax tidak ditemukan');
         }
     }, 500);
 });
