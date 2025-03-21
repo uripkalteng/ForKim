@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             result += '\u21CC'; // Panah ⇌
                             i += 3;
                         } else if (formula[i] === '^' && i + 1 < formula.length) {
+                            // Superscript untuk muatan dalam ^
                             var charge = '';
                             var j = i + 1;
                             if (formula[j] === '(') {
@@ -44,10 +45,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                 i++;
                             }
                         } else if (formula[i] === '[' && i + 1 < formula.length) {
+                            // Ion kompleks dengan kurung siku
                             var j = i + 1;
                             var complex = '';
                             while (j < formula.length && formula[j] !== ']') {
-                                complex += formula[j].replace('l', '\u2113'); // Ganti l jadi ℓ
+                                complex += formula[j];
                                 j++;
                             }
                             if (j < formula.length && formula[j] === ']') {
@@ -55,6 +57,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 for (var k = 0; k < complex.length; k++) {
                                     if (/\d/.test(complex[k]) && k > 0 && /[A-Za-z)]/.test(complex[k-1])) {
                                         subResult += '<sub>' + complex[k] + '</sub>';
+                                    } else if (complex[k] === 'l') {
+                                        subResult += '\u2113'; // Ganti l jadi ℓ
                                     } else {
                                         subResult += complex[k];
                                     }
@@ -62,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 result += '[' + subResult + ']';
                                 i = j + 1;
 
+                                // Cek muatan setelah kurung siku
                                 if (i < formula.length) {
                                     var chargeNumber = '';
                                     var chargeSign = '';
@@ -81,24 +86,27 @@ document.addEventListener('DOMContentLoaded', function() {
                                     }
                                 }
                             } else {
-                                result += formula[i].replace('l', '\u2113');
+                                result += formula[i];
                                 i++;
                             }
                         } else if (formula[i] === '(' && i + 1 < formula.length) {
+                            // Kurung bulat
                             var j = i + 1;
                             var state = '';
                             while (j < formula.length && formula[j] !== ')') {
-                                state += formula[j].replace('l', '\u2113'); // Ganti l jadi ℓ
+                                state += formula[j];
                                 j++;
                             }
                             if (j < formula.length && formula[j] === ')') {
-                                if (state === 's' || state === 'g' || state === 'aq' || state === '\u2113') { // Tangani (l) jadi (ℓ)
-                                    result += '<i>(' + (state === 'l' ? '\u2113' : state) + ')</i>';
+                                if (state === 's' || state === 'l' || state === 'g' || state === 'aq') {
+                                    result += '<i>(' + state + ')</i>';
                                 } else {
                                     var subResult = '';
                                     for (var k = 0; k < state.length; k++) {
                                         if (/\d/.test(state[k]) && k > 0 && /[A-Za-z]/.test(state[k-1])) {
                                             subResult += '<sub>' + state[k] + '</sub>';
+                                        } else if (state[k] === 'l') {
+                                            subResult += '\u2113'; // Ganti l jadi ℓ
                                         } else {
                                             subResult += state[k];
                                         }
@@ -107,18 +115,24 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                                 i = j + 1;
                             } else {
-                                result += formula[i].replace('l', '\u2113');
+                                result += formula[i];
                                 i++;
                             }
                         } else if (/\d/.test(formula[i]) && i > 0 && /[A-Za-z)]/.test(formula[i-1])) {
+                            // Subskrip setelah huruf atau kurung tutup
                             result += '<sub>' + formula[i] + '</sub>';
                             i++;
+                        } else if (formula[i] === 'l') {
+                            // Ganti l kecil jadi ℓ di luar kurung
+                            result += '\u2113';
+                            i++;
                         } else {
-                            result += formula[i].replace('l', '\u2113'); // Ganti l jadi ℓ di teks biasa
+                            result += formula[i];
                             i++;
                         }
                     }
-                    return '<span style="font-family: \'Times New Roman\', serif;">' + result + '</span>';
+                    // Bungkus dengan span untuk font Times New Roman
+                    return '<span class="chemical-formula">' + result + '</span>';
                 });
                 paragraph.innerHTML = formattedText;
             }
