@@ -1,7 +1,16 @@
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(function() {
         document.querySelectorAll('p, li').forEach(function(paragraph) {
-            if (paragraph.closest('#calx, [data-calx], .calx-sheet, .calx-form, input[data-cell]')) return;
+            // Lewati elemen yang sudah diproses MathJax
+            if (paragraph.classList.contains('MathJax') || paragraph.querySelector('.MathJax') || paragraph.querySelector('script[type^="math"]')) {
+                console.log('Lewati elemen MathJax: ', paragraph.textContent);
+                return;
+            }
+            // Lewati elemen Calx
+            if (paragraph.closest('#calx, [data-calx], .calx-sheet, .calx-form, input[data-cell]')) {
+                console.log('Lewati elemen Calx: ', paragraph.textContent);
+                return;
+            }
 
             var text = paragraph.textContent;
             if (text.includes('\\')) {
@@ -121,11 +130,17 @@ document.addEventListener('DOMContentLoaded', function() {
                             i++;
                         }
                     }
-                    // Bungkus hanya rumus kimia dengan Times New Roman dan ukuran font
+                    // Terapkan Times New Roman hanya pada rumus kimia
                     return '<span style="font-family: \'Times New Roman\', serif; font-size: 13pt;">' + result + '</span>';
                 });
                 paragraph.innerHTML = formattedText;
+                console.log('Formatted: ', paragraph.innerHTML); // Debug
             }
         });
-    }, 500);
+        // Re-render MathJax setelah pemrosesan kimia selesai
+        if (typeof MathJax !== 'undefined') {
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+            console.log('MathJax re-render dipanggil');
+        }
+    }, 500); // Tunggu 500ms untuk pastikan DOM siap
 });
