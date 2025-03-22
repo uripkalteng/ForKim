@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(function() {
         console.log('Mulai pemrosesan');
         document.querySelectorAll('p, li').forEach(function(paragraph) {
-            // Hanya lewati elemen yang benar-benar sudah dirender oleh MathJax
             if (paragraph.querySelector('script[type^="math"]') || paragraph.classList.contains('MathJax_Preview')) return;
             var text = paragraph.textContent;
             if (text.includes('/')) {
@@ -13,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     result = result.replace(/\[([^\]]*)\](\d*[+-])?/g, function(match, complex, charge) {
                         var formattedComplex = complex;
                         // Subskrip di dalam ion kompleks (setelah huruf atau tanda kurung)
-                        formattedComplex = formattedComplex.replace(/([A-Za-z\]"])([0-9]+)/g, '$1<sub>$2</sub>');
+                        formattedComplex = formattedComplex.replace(/([A-Za-z\]\)])([0-9]+)/g, '$1<sub>$2</sub>');
                         formattedComplex = formattedComplex.replace(/l/g, '\u2113');
                         var formattedCharge = charge ? '<sup>' + charge + '</sup>' : '';
                         return '[' + formattedComplex + ']' + formattedCharge;
@@ -22,8 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     result = result.replace(/\((s|l|g|aq)\)/g, function(match, state) {
                         return '<i>(' + state.replace('l', '\u2113') + ')</i>';
                     });
-                    // Subskrip di luar ion kompleks
-                    result = result.replace(/([A-Za-z])([0-9]+)(?=\b|[^0-9])/g, '$1<sub>$2</sub>');
+                    // Subskrip di luar ion kompleks (setelah huruf atau tanda kurung)
+                    result = result.replace(/([A-Za-z\]\)])([0-9]+)(?=\b|[^0-9])/g, '$1<sub>$2</sub>');
                     // Superscript untuk muatan
                     result = result.replace(/\^(\d*[+-])/g, '<sup>$1</sup>');
                     // Ganti l jadi ℓ
