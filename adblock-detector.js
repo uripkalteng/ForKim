@@ -37,7 +37,7 @@ function updateAdBlockMessage(isAdBlocked) {
             adBlockMessage.style.textAlign = "center";
             adBlockMessage.style.maxWidth = "90%";
             adBlockMessage.style.boxSizing = "border-box";
-            adBlockMessage.style.boxShadow = "rgba(248, 215, 218, 0.9)";
+            adBlockMessage.style.boxShadow = "rgba(248, 215, 218, 0.8)";
             
             var line1 = document.createElement("div");
             line1.innerText = "Kami mendeteksi Anda menggunakan AdBlock.";
@@ -57,8 +57,8 @@ function updateAdBlockMessage(isAdBlocked) {
             styleSheet.innerText = `
                 @media (max-width: 600px) {
                     div#adblock-message {
-                        font-size: 14px;
-                        padding: 12px;
+                        font-size: 13px;
+                        padding: 10px;
                         max-width: 100%;
                     }
                 }
