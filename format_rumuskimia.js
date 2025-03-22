@@ -1,4 +1,3 @@
-/* <![CDATA[ */
 document.addEventListener("DOMContentLoaded", function() {
     console.log("Script dimuat");
     setTimeout(function() {
@@ -41,4 +40,3 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }, 500);
 });
-/* ]]> */
