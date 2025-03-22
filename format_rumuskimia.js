@@ -1,4 +1,3 @@
-<script type="text/javascript">
 /* <![CDATA[ */
 document.addEventListener("DOMContentLoaded", function() {
     console.log("Script dimuat");
@@ -43,4 +42,3 @@ document.addEventListener("DOMContentLoaded", function() {
     }, 500);
 });
 /* ]]> */
-</script>
