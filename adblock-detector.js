@@ -37,8 +37,8 @@ function updateAdBlockMessage(isAdBlocked) {
             adBlockMessage.style.textAlign = "center";
             adBlockMessage.style.maxWidth = "90%";
             adBlockMessage.style.boxSizing = "border-box";
-            adBlockMessage.style.boxShadow = "0 2px 10px rgba(0, 0, 0, 0.2)";
-
+            adBlockMessage.style.boxShadow = "0 2px 10px rgba(248, 215, 218, 0.9)";
+            
             var line1 = document.createElement("div");
             line1.innerText = "Kami mendeteksi Anda menggunakan AdBlock.";
             line1.style.marginBottom = "10px";
