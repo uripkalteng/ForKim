@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(function() {
         console.log('Mulai pemrosesan');
         document.querySelectorAll('p, li').forEach(function(paragraph) {
-            if (paragraph.classList.contains('MathJax') || paragraph.querySelector('.MathJax')) return;
+            // Hanya lewati elemen yang benar-benar sudah dirender oleh MathJax
+            if (paragraph.querySelector('script[type^="math"]') || paragraph.classList.contains('MathJax_Preview')) return;
             var text = paragraph.textContent;
             if (text.includes('/')) {
                 var formattedText = text.replace(/\/(.*?)\/(?!\/)/g, function(match, formula) {
@@ -11,8 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Ion kompleks: [Ag(NH3)2]^3+
                     result = result.replace(/\[([^\]]*)\](\d*[+-])?/g, function(match, complex, charge) {
                         var formattedComplex = complex;
-                        // Subskrip di dalam ion kompleks
-                        formattedComplex = formattedComplex.replace(/([A-Za-z])([0-9]+)/g, '$1<sub>$2</sub>');
+                        // Subskrip di dalam ion kompleks (setelah huruf atau tanda kurung)
+                        formattedComplex = formattedComplex.replace(/([A-Za-z\]"])([0-9]+)/g, '$1<sub>$2</sub>');
                         formattedComplex = formattedComplex.replace(/l/g, '\u2113');
                         var formattedCharge = charge ? '<sup>' + charge + '</sup>' : '';
                         return '[' + formattedComplex + ']' + formattedCharge;
