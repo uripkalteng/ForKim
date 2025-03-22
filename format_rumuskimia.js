@@ -1,17 +1,3 @@
-<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-MML-AM_CHTML' type='text/javascript'>
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js","TeX/AMSmath.js","TeX/AMSsymbols.js","TeX/mhchem.js","TeX/cancel.js","TeX/color.js"],
-    jax: ["input/TeX", "output/HTML-CSS"],
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-      processClass: "mathjax",
-      ignoreClass: "chem-formula"
-    },
-    "HTML-CSS": { availableFonts: ["TeX"], scale: 90 }
-  });
-</script>
-<script>
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Script dimuat');
     setTimeout(function() {
@@ -22,26 +8,19 @@ document.addEventListener('DOMContentLoaded', function() {
             if (text.includes('/')) {
                 var formattedText = text.replace(/\/(.*?)\/(?!\/)/g, function(match, formula) {
                     var result = formula;
-                    // Ion kompleks: [Ag(NH3)2]^3+
                     result = result.replace(/\[([^\]]*)\](\d*[+-])?/g, function(match, complex, charge) {
                         var formattedComplex = complex;
-                        // Subskrip di dalam ion kompleks
                         formattedComplex = formattedComplex.replace(/([A-Za-z\)\]])([0-9]+)/g, '$1<sub>$2</sub>');
                         formattedComplex = formattedComplex.replace(/l/g, '\u2113');
                         var formattedCharge = charge ? '<sup>' + charge + '</sup>' : '';
                         return '[' + formattedComplex + ']' + formattedCharge;
                     });
-                    // Wujud zat: (s), (l), (g), (aq)
                     result = result.replace(/\((s|l|g|aq)\)/g, function(match, state) {
                         return '<i>(' + state.replace('l', '\u2113') + ')</i>';
                     });
-                    // Subskrip di luar ion kompleks
                     result = result.replace(/([A-Za-z\)\]])([0-9]+)(?=\b|[^0-9])/g, '$1<sub>$2</sub>');
-                    // Superscript untuk muatan
                     result = result.replace(/\^(\d*[+-])/g, '<sup>$1</sup>');
-                    // Ganti l jadi ℓ
                     result = result.replace(/l/g, '\u2113');
-                    // Panah
                     result = result.replace(/<=>/g, '\u21CC');
                     return '<span style="font-family: \'Times New Roman\', serif; font-size: 13pt;" class="chem-formula">' + result + '</span>';
                 });
@@ -55,4 +34,3 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 500);
 });
-</script>
