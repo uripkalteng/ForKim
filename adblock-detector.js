@@ -33,7 +33,7 @@ function updateAdBlockMessage(isAdBlocked) {
             adBlockMessage.style.border = "1px solid #f5c6cb";
             adBlockMessage.style.borderRadius = "5px";
             adBlockMessage.style.zIndex = "1000";
-            adBlockMessage.style.fontSize = "18px";
+            adBlockMessage.style.fontSize = "16px";
             adBlockMessage.style.textAlign = "center";
             adBlockMessage.style.maxWidth = "90%";
             adBlockMessage.style.boxSizing = "border-box";
@@ -58,7 +58,7 @@ function updateAdBlockMessage(isAdBlocked) {
                 @media (max-width: 600px) {
                     div#adblock-message {
                         font-size: 14px;
-                        padding: 15px;
+                        padding: 12px;
                         max-width: 100%;
                     }
                 }
@@ -70,7 +70,7 @@ function updateAdBlockMessage(isAdBlocked) {
             adBlockMessage.style.transition = "opacity 0.5s ease-in-out";
             document.body.appendChild(adBlockMessage);
             setTimeout(function() {
-                adBlockMessage.style.opacity = "1";
+                adBlockMessage.style.opacity = "0.8";
             }, 100);
 
             console.log("Pesan AdBlock ditampilkan");
