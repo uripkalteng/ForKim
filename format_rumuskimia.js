@@ -22,8 +22,9 @@ document.addEventListener("DOMContentLoaded", function() {
                     });
                     // Proses status fase (s, l, g, aq)
                     result = result.replace(/\((s|l|g|aq)\)/g, function(match, state) {
-                        return "<i>(" + state.replace("l", "\u2113") + ")</i>";
+                        return "(" + "<i>" + state.replace("l", "\u2113") + "</i>" + ")";
                     });
+
                     // Proses superscript untuk muatan (seperti ^2-)
                     result = result.replace(/\^(\d*[+-])/g, "<sup>$1</sup>");
                     // Ganti <=> dengan tanda panah keseimbangan (⇌)
