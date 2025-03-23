@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     result = result.replace(/\^(\d*[+-])/g, "<sup>$1</sup>");
                     // Ganti <=> dengan tanda panah keseimbangan (⇌)
                     result = result.replace(/<=>/g, "\u21CC");
-                    return "<span style=\"font-family: 'Times New Roman', serif; font-size: 13pt;\" class=\"chem-formula\">" + result + "</span>";
+                    return "<span style=\"font-family: 'Times New Roman', serif; font-size: 12pt;\" class=\"chem-formula\">" + result + "</span>";
                 });
                 paragraph.innerHTML = formattedText;
                 console.log("Hasil: ", paragraph.innerHTML);
