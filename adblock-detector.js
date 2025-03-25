@@ -14,6 +14,7 @@ function detectAdBlock(callback) {
 
 var adBlockMessage = null;
 var adBlockStatus = null;
+
 function updateAdBlockMessage(isAdBlocked) {
     console.log("Status AdBlock: ", isAdBlocked);
     if (adBlockStatus === isAdBlocked) return;
@@ -22,76 +23,91 @@ function updateAdBlockMessage(isAdBlocked) {
     if (isAdBlocked) {
         if (!adBlockMessage) {
             adBlockMessage = document.createElement("div");
-            adBlockMessage.style.position = "fixed";
-            adBlockMessage.style.top = "auto";
-            adBlockMessage.style.bottom = "20px";
-            adBlockMessage.style.left = "50%";
-            adBlockMessage.style.transform = "translateX(-50%)";
-            adBlockMessage.style.background = "#f8d7da";
-            adBlockMessage.style.color = "#721c24";
-            adBlockMessage.style.padding = "20px";
-            adBlockMessage.style.border = "1px solid #f5c6cb";
-            adBlockMessage.style.borderRadius = "5px";
-            adBlockMessage.style.zIndex = "1000";
-            adBlockMessage.style.fontSize = "16px";
-            adBlockMessage.style.textAlign = "center";
-            adBlockMessage.style.maxWidth = "90%";
-            adBlockMessage.style.boxSizing = "border-box";
-            adBlockMessage.style.boxShadow = "rgba(248, 215, 218, 0.8)";
-            
-            var line1 = document.createElement("div");
-            line1.innerText = "Kami mendeteksi Anda menggunakan AdBlock.";
-            line1.style.marginBottom = "10px";
-            adBlockMessage.appendChild(line1);
+            Object.assign(adBlockMessage.style, {
+                position: "fixed",
+                bottom: "20px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                background: "rgba(248, 215, 218, 0.9)", // Transparansi di sini
+                color: "#721c24",
+                padding: "15px 20px",
+                borderRadius: "8px",
+                zIndex: "1000",
+                fontFamily: "Arial, sans-serif",
+                fontSize: "16px",
+                textAlign: "center",
+                maxWidth: "500px", // Batas max-width biar ga terlalu lebar di desktop
+                width: "90%", // Responsif di mobile
+                boxSizing: "border-box",
+                boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)", // Shadow lebih halus
+                opacity: "0",
+                transition: "opacity 0.5s ease-in-out"
+            });
 
-            var line2 = document.createElement("div");
-            line2.innerText = "Mohon nonaktifkan AdBlock untuk mendukung situs kami.";
-            line2.style.marginBottom = "10px";
-            adBlockMessage.appendChild(line2);
-
-            var line3 = document.createElement("div");
-            line3.innerText = "Iklan membantu kami menjaga situs ini tetap gratis untuk Anda!";
-            adBlockMessage.appendChild(line3);
-
-            var styleSheet = document.createElement("style");
-            styleSheet.innerText = `
-                @media (max-width: 600px) {
-                    div#adblock-message {
-                        font-size: 13px;
-                        padding: 10px;
-                        max-width: 100%;
-                    }
-                }
+            // Konten pesan
+            adBlockMessage.innerHTML = `
+                <div style="font-weight: bold; margin-bottom: 8px;">AdBlock Terdeteksi!</div>
+                <div style="font-size: 14px;">Mohon matikan AdBlock untuk dukung kami. Iklan bantu situs ini tetap gratis buat kamu!</div>
+                <button style="margin-top: 10px; padding: 5px 15px; background: #721c24; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Oke, Mengerti</button>
             `;
-            document.head.appendChild(styleSheet);
-            adBlockMessage.id = "adblock-message";
 
-            adBlockMessage.style.opacity = "0";
-            adBlockMessage.style.transition = "opacity 0.5s ease-in-out";
+            adBlockMessage.id = "adblock-message";
             document.body.appendChild(adBlockMessage);
-            setTimeout(function() {
-                adBlockMessage.style.opacity = "0.8";
+
+            // Fade-in effect
+            setTimeout(() => {
+                adBlockMessage.style.opacity = "1"; // Full opacity biar keliatan
             }, 100);
+
+            // Event listener buat tombol close
+            adBlockMessage.querySelector("button").addEventListener("click", () => {
+                adBlockMessage.style.opacity = "0";
+                setTimeout(() => {
+                    adBlockMessage.remove();
+                    adBlockMessage = null;
+                }, 500); // Sinkron sama durasi transisi
+            });
 
             console.log("Pesan AdBlock ditampilkan");
         }
     } else {
         if (adBlockMessage) {
-            adBlockMessage.parentNode.removeChild(adBlockMessage);
-            adBlockMessage = null;
+            adBlockMessage.style.opacity = "0";
+            setTimeout(() => {
+                adBlockMessage.remove();
+                adBlockMessage = null;
+            }, 500);
             console.log("Pesan AdBlock dihapus");
         }
     }
 }
 
-window.onload = function() {
-    detectAdBlock(function(isAdBlocked) {
-        updateAdBlockMessage(isAdBlocked);
-    });
+// Media queries langsung di JS biar lebih dinamis
+function applyResponsiveStyles() {
+    const width = window.innerWidth;
+    if (width <= 600) {
+        if (adBlockMessage) {
+            Object.assign(adBlockMessage.style, {
+                fontSize: "14px",
+                padding: "10px 15px",
+                maxWidth: "100%"
+            });
+            adBlockMessage.querySelectorAll("div").forEach(el => el.style.fontSize = "12px");
+        }
+    } else {
+        if (adBlockMessage) {
+            Object.assign(adBlockMessage.style, {
+                fontSize: "16px",
+                padding: "15px 20px",
+                maxWidth: "500px"
+            });
+            adBlockMessage.querySelectorAll("div").forEach(el => el.style.fontSize = "14px");
+        }
+    }
+}
 
-    setInterval(function() {
-        detectAdBlock(function(isAdBlocked) {
-            updateAdBlockMessage(isAdBlocked);
-        });
-    }, 10000);
+window.onload = function() {
+    detectAdBlock(updateAdBlockMessage);
+    setInterval(() => detectAdBlock(updateAdBlockMessage), 10000);
+    window.addEventListener("resize", applyResponsiveStyles); // Responsif saat ukuran layar berubah
 };
