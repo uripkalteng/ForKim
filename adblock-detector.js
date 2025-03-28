@@ -98,7 +98,7 @@ function applyResponsiveStyles() {
                 width: "100%",
                 height: "100%",
                 padding: "15px",
-                fontSize: "16px",
+                fontSize: "14px",
                 borderRadius: "0", // No radius biar bener-bener full
                 boxShadow: "none" // Shadow ga perlu di full-screen
             });
