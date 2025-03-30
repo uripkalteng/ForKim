@@ -27,8 +27,8 @@ function updateAdBlockMessage(isAdBlocked) {
                 position: "fixed",
                 top: "0", // Full-screen mulai dari atas
                 left: "0", // Full-screen dari kiri
-                width: "100%", // Lebar penuh
-                height: "100%", // Tinggi penuh
+                width: "90%", // Lebar penuh
+                height: "90%", // Tinggi penuh
                 background: "rgba(248, 215, 218, 0.95)", // Transparansi dikit biar bold
                 color: "#721c24",
                 padding: "20px",
