@@ -93,10 +93,11 @@ function applyResponsiveStyles() {
         // Full-screen di mobile
         if (adBlockMessage) {
             Object.assign(adBlockMessage.style, {
-                top: "0",
+                top: "auto",
+                bottom: "20px",
                 left: "0",
-                width: "100%",
-                height: "100%",
+                width: "80%",
+                height: "auto",
                 padding: "15px",
                 fontSize: "14px",
                 borderRadius: "0", // No radius biar bener-bener full
